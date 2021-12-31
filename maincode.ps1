@@ -73,9 +73,9 @@ Write-Output "New Ip has been exported to $new_IP_file_name"
 
 #------------------------------
 
-$storageaccount = 'nphubpa' 
-$resourcegroup = 'NPHUBPA2'
-$container = 'aws-ip-range-whitelisting'
+$storageaccount = Get-AutomationVariable -Name 'Azure_Storage_Account_Name'
+$resourcegroup = Get-AutomationVariable -Name 'StorageAccount_ResourceGroup'
+$container = Get-AutomationVariable -Name 'StorageAccount_Container_Name' #Where the old IP range CSV file available
 
 
 $context = (Get-AzStorageAccount -Name $storageaccount -ResourceGroupName $resourcegroup).context
@@ -92,7 +92,7 @@ $value = Compare-Object -ReferenceObject (Get-Content -Path $new_IP_file_name) -
 if ( $value -ne $null ){
     write-output "changes found hence, updating the NSG rule"
 
-    $rule_name = ("sftp_AWSIPRange_" +$(Get-Date).Day +"_"+ $(Get-Date).Hour + "_" + $(Get-Date).Minute)
+    $rule_name = ("AWSIPRange_" +$(Get-Date).Day +"_"+ $(Get-Date).Hour + "_" + $(Get-Date).Minute)
     $rule = "Outbound"
     
     Write-Output " "
